@@ -1,29 +1,59 @@
+// Imports
 import { useContext } from "react";
 import styled from "styled-components";
 import { GithubContext } from "../context/context";
 import { ExampleChart, Pie3D, Column3D, Bar3D, Doughnut2D } from "./Charts";
 
 const Repos = () => {
+  // Using Context API to access global state.
+  // Fetching the repos states
   const { repos } = useContext(GithubContext);
-  const chartData = [
-    {
-      label: "HTML",
-      value: "15",
-    },
-    {
-      label: "CSS",
-      value: "25",
-    },
-    {
-      label: "JavaScript",
-      value: "60",
-    },
-  ];
+
+  // Iterate through repos with the "reduce" method
+  let languages = repos.reduce((total, item) => {
+    // deconstruct the language property from each repo
+    const { language } = item;
+    // if that language doesn't exists (is null), return and do nothing
+    if (!language) return total;
+    // if the language exists but it's not it the object that we construct,
+    // add it and set the value to 1
+    if (!total[language]) {
+      total[language] = { label: language, value: 1 };
+      // if the language is already in the object,
+      // copy the previous properties with the spread operator,
+      // update the value property by adding one to the laready existing one
+    } else {
+      total[language] = {
+        ...total[language],
+        value: total[language].value + 1,
+      };
+    }
+    // The reduce method requires us to return the constructed object
+    return total;
+  }, {});
+
+  // In order not to over-populate the chart, we are going to display
+  // only the 5 most popular languages.
+  // In order to do that, we will transform the object back to an array
+  // and slice it to only keep the first 5 instances
+
+  // To achieve that we use the Object.values method.
+  // It transforms the object to an array of the values.
+  languages = Object.values(languages)
+    // chain the sort method to get them in order from
+    // most to least popular
+    .sort((a, b) => {
+      return b.value - a.value;
+    })
+    // slice the array to keep only the top 5.
+    .slice(0, 5);
+  console.log(languages);
 
   return (
     <section className="section">
       <Wrapper className="section-center">
-        <ExampleChart data={chartData} />;
+        {/* Pass the data dynamically to the chart */}
+        <Pie3D data={languages} />
       </Wrapper>
     </section>
   );
