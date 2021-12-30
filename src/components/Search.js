@@ -6,7 +6,7 @@ const Search = () => {
   // Local state
   const [user, setUser] = useState("");
   // Global state
-  const { requests } = useContext(GithubContext);
+  const { requests, error } = useContext(GithubContext);
 
   // Handle submit form
   const handleSubmit = (e) => {
@@ -17,6 +17,11 @@ const Search = () => {
   return (
     <section className="section">
       <Wrapper className="section-center">
+        {error.show && (
+          <ErrorWrapper>
+            <p>{error.msg}</p>
+          </ErrorWrapper>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="form-control">
             <MdSearch />
