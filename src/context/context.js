@@ -49,6 +49,15 @@ const GithubProvider = ({ children }) => {
     console.log(response);
     if (response) {
       setGithubUser(response.data);
+      const { login, followers_url } = response.data;
+      // API call for repos
+      axios(`${rootUrl}/users/${login}/repos?per_page=100`).then((res) =>
+        setRepos(res.data)
+      );
+      // API call for followers
+      axios(`${followers_url}?per_page=100`).then((res) =>
+        setFollowers(res.data)
+      );
     } else {
       toggleError(true, "select another username");
     }
