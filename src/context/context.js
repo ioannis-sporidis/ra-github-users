@@ -15,23 +15,13 @@ const GithubProvider = ({ children }) => {
   const [followers, setFollowers] = useState(mockFollowers);
   // remaining requests states
   const [requests, setRequests] = useState(0);
-  const [loading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // error state
   const [error, setError] = useState({ show: false, msg: "" });
 
-  // Search github user
-  const searchGithubUser = async (user) => {
-    // set error
-    // set loading to true
-    const response = await axios(`${rootUrl}/users/${user}`).catch((err) =>
-      console.log(err)
-    );
-    console.log(response);
-    if (response) {
-      setGithubUser(response.data);
-    } else {
-      toggleError(true, "select another username");
-    }
+  // Toggle error
+  const toggleError = (show = false, msg = "") => {
+    setError({ show, msg });
   };
 
   // check remaining requests
@@ -49,11 +39,24 @@ const GithubProvider = ({ children }) => {
       .catch((err) => console.log(err));
   };
 
-  // Toggle error
-  const toggleError = (show = false, msg = "") => {
-    setError({ show, msg });
+  // Search github user
+  const searchGithubUser = async (user) => {
+    toggleError();
+    setIsLoading(true);
+    const response = await axios(`${rootUrl}/users/${user}`).catch((err) =>
+      console.log(err)
+    );
+    console.log(response);
+    if (response) {
+      setGithubUser(response.data);
+    } else {
+      toggleError(true, "select another username");
+    }
+    checkRequests();
+    setIsLoading(false);
   };
 
+  // UseEffect
   useEffect(checkRequests, []);
 
   return (
@@ -64,6 +67,7 @@ const GithubProvider = ({ children }) => {
         followers,
         requests,
         error,
+        isLoading,
         searchGithubUser,
       }}
     >
