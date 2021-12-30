@@ -19,6 +19,21 @@ const GithubProvider = ({ children }) => {
   // error state
   const [error, setError] = useState({ show: false, msg: "" });
 
+  // Search github user
+  const searchGithubUser = async (user) => {
+    // set error
+    // set loading to true
+    const response = await axios(`${rootUrl}/users/${user}`).catch((err) =>
+      console.log(err)
+    );
+    console.log(response);
+    if (response) {
+      setGithubUser(response.data);
+    } else {
+      toggleError(true, "select another username");
+    }
+  };
+
   // check remaining requests
   const checkRequests = () => {
     axios(`${rootUrl}/rate_limit`)
@@ -43,7 +58,14 @@ const GithubProvider = ({ children }) => {
 
   return (
     <GithubContext.Provider
-      value={{ githubUser, repos, followers, requests, error }}
+      value={{
+        githubUser,
+        repos,
+        followers,
+        requests,
+        error,
+        searchGithubUser,
+      }}
     >
       {children}
     </GithubContext.Provider>

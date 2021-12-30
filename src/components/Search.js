@@ -6,13 +6,12 @@ const Search = () => {
   // Local state
   const [user, setUser] = useState("");
   // Global state
-  const { requests, error } = useContext(GithubContext);
+  const { requests, error, searchGithubUser } = useContext(GithubContext);
 
   // Handle submit form
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(user);
-    setUser("");
+    searchGithubUser(user);
   };
   return (
     <section className="section">
