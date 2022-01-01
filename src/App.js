@@ -4,11 +4,20 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="login" element={<Login />} />
-      <Route path="*" element={<Error />} />
-    </Routes>
+    <AuthWrapper>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path="login" element={<Login />} />
+        <Route path="*" element={<Error />} />
+      </Routes>
+    </AuthWrapper>
   );
 }
 
